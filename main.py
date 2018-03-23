@@ -24,6 +24,7 @@ from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
+from keras.utils.vis_utils import plot_model
 
 
 # Фнукция для считывания данных из файла data.csv
@@ -61,28 +62,29 @@ def plot_values(dataset):
     pyplot.show()
 
 
-# convert series to supervised learning
+# Переводим данные в формат тренировки
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     n_vars = 1 if type(data) is list else data.shape[1]
     df = DataFrame(data)
     cols, names = list(), list()
-    # input sequence (t-n, ... t-1)
+    # Создаем серию с т-1 и т.д.
     for i in range(n_in, 0, -1):
         cols.append(df.shift(i))
         names += [('var%d(t-%d)' % (j+1, i)) for j in range(n_vars)]
-    # forecast sequence (t, t+1, ... t+n)
+    # Создаем серию с т+1 и т.д.
     for i in range(0, n_out):
         cols.append(df.shift(-i))
         if i == 0:
             names += [('var%d(t)' % (j+1)) for j in range(n_vars)]
         else:
             names += [('var%d(t+%d)' % (j+1, i)) for j in range(n_vars)]
-    # put it all together
+    # Комбинируем
     agg = concat(cols, axis=1)
     agg.columns = names
-    # drop rows with NaN values
+    # Убераем нули
     if dropnan:
         agg.dropna(inplace=True)
+    # Возвращаем данные
     return agg
 
 
@@ -108,59 +110,70 @@ def reframe_data(dataset):
     return reframed, scaler
 
 
+# Делим на тренировочные данные и тестовые данные, в виде входящих данных массив reframed
 def split_train_test(reframed):
-    # split into train and test sets
+    # Берем данные их массива
     values = reframed.values
+    # Определяем грань между тренировочными данными и тестовыми
     n_train_days = 500
+    # Делим данные
     train = values[:n_train_days, :]
     test = values[n_train_days:, :]
-    # split into input and outputs
+    # Делим данные на входящие и выходящие данные
     train_X, train_y = train[:, :-1], train[:, -1]
     test_X, test_y = test[:, :-1], test[:, -1]
-    # reshape input to be 3D [samples, timesteps, features]
+    # Придаем им форму 3D [samples, timesteps, features]
     train_X = train_X.reshape((train_X.shape[0], 1, train_X.shape[1]))
     test_X = test_X.reshape((test_X.shape[0], 1, test_X.shape[1]))
+    # Возращаем данные
     return train_X, train_y, test_X, test_y
 
 
+# Создаем и тренируем ИНС
 def design_ANN(train_X, train_y, test_X, test_y):
-    # design network
+    # Создаем ИНС
     model = Sequential()
+    # 50 скрытых уровней, форма по входящим данным
     model.add(LSTM(50, input_shape=(train_X.shape[1], train_X.shape[2])))
+    # Создаем скрытый уровень ИНС
     model.add(Dense(1))
+    # Потери в виде среднее абсолютное значение ошибки и тренер Адам
+    # Адам - метод стохастической оптимизации
     model.compile(loss='mae', optimizer='adam')
-    # fit network
+    # Тренируем сеть на 500 эпох
     history = model.fit(train_X, train_y, epochs=500, batch_size=144, validation_data=(test_X, test_y), verbose=2, shuffle=False)
-    # plot history
+    # Рисуем график тренировки
     pyplot.plot(history.history['loss'], label='train')
     pyplot.plot(history.history['val_loss'], label='test')
     pyplot.legend()
     pyplot.show()
+    # Возвращаем модель
     return model
 
 
+# Проверяем нашу модель
 def evaluate(train_X, train_y, test_X, test_y, model, scaler):
-    # make a prediction
+    # Делаем прогнозирование
     yhat = model.predict(test_X)
     test_X = test_X.reshape((test_X.shape[0], test_X.shape[2]))
-    # invert scaling for forecast
+    # Убираем нормализацию данных с предугаданных
     inv_yhat = concatenate((yhat, test_X[:, 1:]), axis=1)
     inv_yhat = scaler.inverse_transform(inv_yhat)
     inv_yhat = inv_yhat[:,0]
-    # invert scaling for actual
+    # Убираем нормализацию данных с настоящих
     test_y = test_y.reshape((len(test_y), 1))
     inv_y = concatenate((test_y, test_X[:, 1:]), axis=1)
     inv_y = scaler.inverse_transform(inv_y)
     inv_y = inv_y[:,0]
-    # calculate RMSE
+    # Расчитываем среднеквадратическую ошибку
     rmse = sqrt(mean_squared_error(inv_y, inv_yhat))
-    print('Test RMSE: %.3f' % rmse)
-    yhat = 513.745153152*yhat
-    test_y = 513.745153152*test_y
-    pyplot.plot(yhat, label='Предугаданный')
-    pyplot.plot(test_y, label='Настоящий')
+    print('Среднеквадратическая ошибка: %.3f' % rmse)
+    # Рисуем график
+    pyplot.plot(inv_yhat, label='Предугаданный')
+    pyplot.plot(inv_y, label='Настоящий')
     pyplot.legend()
     pyplot.show()
+
 
 # Основная функция программы
 def main():
@@ -171,11 +184,28 @@ def main():
     # Рисуем график
     plot_values(dataset)
 
-    # reframed, scaler = reframe_data(dataset)
-    # train_X, train_y, test_X, test_y = split_train_test(reframed)
-    # model = design_ANN(train_X, train_y, test_X, test_y)
-    # evaluate(train_X, train_y, test_X, test_y, model, scaler)
+    # Оптимизируем данные
+    reframed, scaler = reframe_data(dataset)
+
+    # Делим тестовые и тренировочные данные
+    train_X, train_y, test_X, test_y = split_train_test(reframed)
+
+    # Тренируем ИНС
+    model = design_ANN(train_X, train_y, test_X, test_y)
+    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
+    # Проверяем ИНС
+    evaluate(train_X, train_y, test_X, test_y, model, scaler)
+
+    # Сохроняем модель в JSON и H5
+    model_json = model.to_json()
+    with open("сохранение_ИНС.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("сохранение_ИНС_весы.h5")
+    print("Сохранили на диск детка")
 
 
 if __name__ == "__main__":
     main()
+
