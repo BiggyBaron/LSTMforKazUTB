@@ -143,10 +143,10 @@ def design_ANN(train_X, train_y, test_X, test_y):
     # Тренируем сеть на 500 эпох
     history = model.fit(train_X, train_y, epochs=500, batch_size=144, validation_data=(test_X, test_y), verbose=2, shuffle=False)
     # Рисуем график тренировки
-    pyplot.plot(history.history['loss'], label='train')
-    pyplot.plot(history.history['val_loss'], label='test')
-    pyplot.legend()
-    pyplot.show()
+    # pyplot.plot(history.history['loss'], label='train')
+    # pyplot.plot(history.history['val_loss'], label='test')
+    # pyplot.legend()
+    # pyplot.show()
     # Возвращаем модель
     return model
 
@@ -169,10 +169,26 @@ def evaluate(train_X, train_y, test_X, test_y, model, scaler):
     rmse = sqrt(mean_squared_error(inv_y, inv_yhat))
     print('Среднеквадратическая ошибка: %.3f' % rmse)
     # Рисуем график
-    pyplot.plot(inv_yhat, label='Предугаданный')
-    pyplot.plot(inv_y, label='Настоящий')
-    pyplot.legend()
-    pyplot.show()
+    # pyplot.plot(inv_yhat, label='Предугаданный')
+    # pyplot.plot(inv_y, label='Настоящий')
+    # pyplot.legend()
+    # pyplot.show()
+    return inv_yhat
+
+
+def gui():
+    dataset = read_data_from_csv()
+    # Оптимизируем данные
+    reframed, scaler = reframe_data(dataset)
+    # Делим тестовые и тренировочные данные
+    train_X, train_y, test_X, test_y = split_train_test(reframed)
+
+    # Тренируем ИНС
+    model = design_ANN(train_X, train_y, test_X, test_y)
+
+    kurs = evaluate(train_X, train_y, test_X, test_y, model, scaler)
+
+    return round(kurs[-1], 2)
 
 
 # Основная функция программы

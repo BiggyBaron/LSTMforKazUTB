@@ -20,8 +20,8 @@ def courses():
         usd = cont["rates"]["USD"]
         rub = cont["rates"]["RUB"]
         # Расчитываем курс тенге к доллару США и к рублю РФ
-        usd_in_kzt = kzt/usd
-        rub_in_kzt = kzt/rub
+        usd_in_kzt = round(kzt/usd, 2)
+        rub_in_kzt = round(kzt/rub, 2)
         # Возращаем данные
         return usd_in_kzt, rub_in_kzt
 
@@ -36,5 +36,15 @@ def brent():
         # Находим значение цены Brent
         price_settle = cont["dataset_data"]["data"][0][4]
         # Возвращаем данные
-        return price_settle
+        return round(price_settle, 2)
 
+
+def main():
+    print("BRENT: " + str(brent()))
+    usd, rub = courses()
+    print("Доллар: " + str(usd))
+    print("Рубль: " + str(rub))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<title>Завтрашний курс тенге</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
+</style>
+<body class="w3-theme-l5">
+
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+  <!-- The Grid -->
+  <div class="w3-row">
+    <!-- Left Column -->
+    <div class="w3-col m3">
+      <!-- Profile -->
+      <div class="w3-card w3-round w3-white">
+        <div class="w3-container">
+         <h4 class="w3-center">Данные сегодня:</h4>
+         <hr>
+         <p><i class="fa fa-dollar fa-fw w3-margin-right w3-text-theme"></i> {{USD}}</p>
+         <p><i class="fa fa-ruble fa-fw w3-margin-right w3-text-theme"></i> {{RUB}}</p>
+         <p><i class="fa fa-car fa-fw w3-margin-right w3-text-theme"></i> {{BRENT}}</p>
+        </div>
+      </div>
+      <br>
+      <!-- Alert Box -->
+      <div class="w3-container w3-display-container w3-round w3-theme-l4 w3-border w3-theme-border w3-margin-bottom w3-hide-small">
+        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-theme-l3 w3-display-topright">
+          <i class="fa fa-remove"></i>
+        </span>
+        <p><strong>Что это?</strong></p>
+        <p>Это диссертация студента КазУТБ: Оспан Бауыржан.</p>
+          <p>Это программа, которая предугадывает курс тенге по отношению к доллару США.</p>
+      </div>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Middle Column -->
+    <div class="w3-col m7">
+
+      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Tenge_symbol.jpg" alt="Avatar" class="w3-left w3-margin-right" style="width:60px">
+        <h4>Курс тенге на завтра: </h4><br>
+        <hr class="w3-clear">
+        <p><h1><center>{{KURS}}</center></h1></p>
+        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-refresh"></i>  Обновить</button>
+      </div>
+    <!-- End Middle Column -->
+      <div class="w3-card w3-round w3-white w3-center w3-margin">
+        <div class="w3-container">
+          <p>График обучения нейронной сети:</p>
+          <img src="/static/ActualvsPredicted.png" alt="Forest" style="width:50%;">
+          <p><strong>Процент ошибки:</strong></p>
+          <p>1.2%</p>
+          <p><button class="w3-button w3-block w3-theme-l4"><i class="fa fa-cloud-download"></i>Скачать график</button></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-col m2">
+      <div class="w3-card w3-round w3-white w3-padding-16 w3-center">
+          <p class="w3-center"><img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" class="w3-circle" style="height:106px;width:106px" alt="GitHubLogo"></p>
+        <p>GitHub репозиторий по адресу:</p>
+          <p>https://goo.gl/Sn16ra</p>
+      </div>
+      <br>
+    <!-- End Right Column -->
+    </div>
+
+  <!-- End Grid -->
+  </div>
+
+<!-- End Page Container -->
+</div>
+<br>
+
+<!-- Footer -->
+<footer class="w3-container w3-theme-d3 w3-padding-16">
+  <h5>Автор проекта: Оспан Бауыржан</h5>
+</footer>
+
+</body>
+</html>
