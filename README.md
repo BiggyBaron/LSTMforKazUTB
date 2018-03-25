@@ -1,6 +1,6 @@
 ## Добро пожаловать на проект "Разработка нейросетевого программного робота для анализа тенденций на торговых биржах"
 Проект создан для диссертации по защите степени в КазУТБ.
-[Вот он](http://www.kazutb.kz/ru/cache/widgetkit/gallery/3/5-39db279268.jpg)
+![Вот он](http://www.kazutb.kz/ru/cache/widgetkit/gallery/3/5-39db279268.jpg)
 ## Установка
 Дальше идет инструкция по установке проекта, но она с учетом того, что Вы знаете хотя бы основы работы на Линуксе и Питоне.
 ### Пререквизиты
@@ -24,7 +24,7 @@ cd LSTMforKazUTB
 ```
 
 #### Установка среды Anaconda
-[Картинка Анаконды](https://binstar-static-prod.s3.amazonaws.com/latest/img/AnacondaCloud_logo_green.png)
+![Картинка Анаконды](https://binstar-static-prod.s3.amazonaws.com/latest/img/AnacondaCloud_logo_green.png)
 [Anaconda](https://anaconda.org/) - специальная среда Python для специалистов больших данных, именно нам она нужна.
 **Далее инструкция только для ОС Debian**
 1. [Вот тут](https://www.digitalocean.com/community/tutorials/how-to-install-the-anaconda-python-distribution-on-ubuntu-16-04) лежит инструкция по установке Anaconda.
